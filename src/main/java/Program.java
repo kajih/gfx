@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Program extends JPanel {
 
@@ -13,6 +15,14 @@ public class Program extends JPanel {
     }
 
     public static void main(String[] arg) {
+
+        int delay = 500; // milliseconds
+        ActionListener updateTask = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+            }
+        };
+        new Timer(delay, updateTask).start();
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
