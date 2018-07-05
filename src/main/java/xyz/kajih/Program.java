@@ -4,13 +4,13 @@ import xyz.kajih.wobj.Solid;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
-public class Program extends JPanel implements ActionListener {
+public class Program extends JPanel {
 
-    private int cx = 0;
-    private int cy = 0;
+    private int cx = 10;
+    private int cy = 100;
     private int rad = 200;
     private float frameCount = 0;
     private float ticks = 0;
@@ -22,6 +22,10 @@ public class Program extends JPanel implements ActionListener {
         super.paintComponent(g);
 
         this.frameCount++;
+
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
         setBackground(Color.black);
         setForeground(Color.white);
 
@@ -31,53 +35,58 @@ public class Program extends JPanel implements ActionListener {
         g.fillOval(this.cx+10,this.cy+10, this.rad-20, this.rad-20);
         g.drawRect(this.cx,this.cy, this.rad, this.rad);
         */
-
         myOb.setX(this.cx);
         myOb.setY(this.cy);
-        myOb.drawRelative(g);
+        myOb.drawRelative(g2d);
 
-        g.drawString("Framerate:"+this.frameCount /this.ticks, 700, 700);
+        g2d.drawString("Framerate:"+this.frameCount / this.ticks, 700, 700);
     }
 
     private void drawScene() {
+        ticks++;
+        int dx = getWidth();
+        int dy = getHeight();
+
         Rectangle rec = new Rectangle(this.cx-10, this.cy-10, this.cx+this.rad+20, this.cy+this.rad+20);
-        this.cx = (this.cx + 1) % 800;
-        repaint(rec);
+        this.cx = (this.cx + 1) % dx;
+        //repaint(rec);
         repaint();
     }
 
-    public void actionPerformed(ActionEvent e) {
-        ticks++;
-        drawScene();
-    }
-
     private void setup() {
+        JFrame frame;
+        //isDoubleBuffered(true);
+
         Rocket r = new Rocket();
-        Polygon p = new Polygon(new int[]{0, 5, 10}, new int[]{20, 0, 20}, 3);
+        Polygon p = new Polygon(new int[]{-5, 0, 5}, new int[]{10, -10, 10}, 3);
         r.setPoly(p);
         this.myOb = r;
 
+        frame = new JFrame("DNA Rockets");
+        frame.add(this);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1000, 800);
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+        final Program instance = this;
+        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(5);
+        executor.scheduleAtFixedRate(new Runnable() {
+                    @Override
+                    public void run() { instance.drawScene(); }
+            }, 0L, 10L, TimeUnit.MILLISECONDS);
+
+        /*
+        int delay = 1; // milliseconds
+        Timer timer = new Timer(delay, this);
+        timer.setInitialDelay(0); // First timer is immediate.
+        timer.start();
+        */
     }
 
     public static void main(String[] arg) {
-
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame;
-            Program clasInst = new Program();
-            clasInst.setup();
-
-            frame = new JFrame("DNA Rockets");
-            frame.add(clasInst);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(1000, 800);
-            frame.setResizable(false);
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-
-            int delay = 1; // milliseconds
-            Timer timer = new Timer(delay, clasInst);
-            timer.setInitialDelay(0); // First timer is immediate.
-            timer.start();
-        });
+        Program clasInst = new Program();
+        clasInst.setup();
     }
 }
