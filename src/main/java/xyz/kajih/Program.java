@@ -55,7 +55,6 @@ public class Program extends JPanel {
 
     private void setup() {
         JFrame frame;
-        //isDoubleBuffered(true);
 
         Rocket r = new Rocket();
         Polygon p = new Polygon(new int[]{-5, 0, 5}, new int[]{10, -10, 10}, 3);
@@ -70,19 +69,8 @@ public class Program extends JPanel {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        final Program instance = this;
         ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(5);
-        executor.scheduleAtFixedRate(new Runnable() {
-                    @Override
-                    public void run() { instance.drawScene(); }
-            }, 0L, 10L, TimeUnit.MILLISECONDS);
-
-        /*
-        int delay = 1; // milliseconds
-        Timer timer = new Timer(delay, this);
-        timer.setInitialDelay(0); // First timer is immediate.
-        timer.start();
-        */
+        executor.scheduleAtFixedRate(() -> this.drawScene(), 0L, 10L, TimeUnit.MILLISECONDS);
     }
 
     public static void main(String[] arg) {
