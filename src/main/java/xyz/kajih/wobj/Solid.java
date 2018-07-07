@@ -22,11 +22,12 @@ public class Solid {
     public void drawRelative(Graphics2D g2d) {
 
         Polygon tmp = new Polygon(this.poly.xpoints, this.poly.ypoints, this.poly.npoints);
-        tmp.translate(this.x, this.y);
 
+        //tmp.translate(this.x, this.y);
         //g2d.rotate(Math.PI/16);
 
         g2d.drawPolygon(tmp);
+
         /*
         AffineTransform rotateTransform = new AffineTransform();
         AffineTransform saveXform = g2d.getTransform();

@@ -4,6 +4,7 @@ import xyz.kajih.wobj.Solid;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +25,9 @@ public class Program extends JPanel {
         this.frameCount++;
 
         Graphics2D g2d = (Graphics2D) g;
+        AffineTransform nullMatrix = new AffineTransform();
+
+
         g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         setBackground(Color.black);
@@ -35,11 +39,16 @@ public class Program extends JPanel {
         g.fillOval(this.cx+10,this.cy+10, this.rad-20, this.rad-20);
         g.drawRect(this.cx,this.cy, this.rad, this.rad);
         */
+        g2d.drawString("Framerate:"+this.frameCount / this.ticks, 700, 700);
+
+        g2d.setTransform(nullMatrix);
+        g2d.translate(this.cx, this.cy);
+        g2d.rotate(Math.toRadians((45)));
+
         myOb.setX(this.cx);
         myOb.setY(this.cy);
         myOb.drawRelative(g2d);
 
-        g2d.drawString("Framerate:"+this.frameCount / this.ticks, 700, 700);
     }
 
     private void drawScene() {
