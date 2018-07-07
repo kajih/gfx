@@ -48,7 +48,6 @@ public class Program extends JPanel {
         myOb.setX(this.cx);
         myOb.setY(this.cy);
         myOb.drawRelative(g2d);
-
     }
 
     private void drawScene() {
